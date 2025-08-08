@@ -7,16 +7,30 @@
     <script src="./jspsych/plugin-html-keyboard-response.js"></script>
     <script src="./jspsych/plugin-preload.js"></script>
     <link href="./jspsych/jspsych.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="./jspsych/my_experiment_style_MRI.css">
+    <link rel="stylesheet" href="my_experiment_style_MRI.css">
     <script src="./jspsych/plugin-categorize-html.js"></script>
+    <script src="./lib/taskflow/client.js"></script>
   </head>
   <body></body>
   <script>
-/* TASK INFO: social threat task with 4 blocks, 1 per condition, 10 images per block; and practice trials */
+/* TASK INFO: social threat task with 4 blocks, 1 per condition, 10 images per block; and practice trials; short version of stt.html */
 
     /* initialize jsPsych */
     var jsPsych = initJsPsych({
-        on_finish: function() {
+        on_finish: async function() {
+
+          if (window.location !== window.parent.location) {
+            // running on server so send data to the server
+            var measure = await TaskFlow.Client.Measure.get();
+            // get data out of jspsych
+            var task_data = JSON.stringify(jsPsych.data.get().values());
+            measure.complete = true;
+            measure.json = task_data;
+            // sync measure with server
+            await TaskFlow.Client.Measure.set(measure);
+            // continue on!
+            TaskFlow.Client.Measure.end();
+          } else {
             // running local
             // display the data
             jsPsych.data.displayData();
