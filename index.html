@@ -5,7 +5,6 @@
       <script src="./jspsych/jspsych.js"></script>
     <script src="./jspsych/plugin-image-keyboard-response.js"></script>
     <script src="./jspsych/plugin-html-keyboard-response.js"></script>
-    <script src="./jspsych/plugin-preload.js"></script>
     <link href="./jspsych/jspsych.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="./jspsych/my_experiment_style_MRI.css">
     <script src="./jspsych/plugin-categorize-html.js"></script>
@@ -40,13 +39,6 @@
 
     /* create timeline */
     var timeline = [];
-
-    /* preload images */
-    var preload = {
-      type: jsPsychPreload,
-      images: ['img/key.png','img/practice1.jpg','img/practice2.jpg','img/practice3.jpg','img/practice4.jpg','socialthreat/NS_NT1.jpg', 'socialthreat/NS_NT2.jpg', 'socialthreat/NS_NT3.jpg', 'socialthreat/NS_NT4.jpg', 'socialthreat/NS_NT5.jpg', 'socialthreat/NS_NT6.jpg', 'socialthreat/NS_NT7.jpg', 'socialthreat/NS_T1.jpg', 'socialthreat/NS_T2.jpg', 'socialthreat/NS_T3.jpg', 'socialthreat/NS_T4.jpg', 'socialthreat/NS_T5.jpg', 'socialthreat/NS_T6.jpg', 'socialthreat/NS_T7.jpg', 'socialthreat/S_NT1.jpg', 'socialthreat/S_NT2_.jpg','socialthreat/S_NT3_.jpg','socialthreat/S_NT4_.jpg','socialthreat/S_NT5_.jpg','socialthreat/S_NT6_.jpg', 'socialthreat/S_NT7_.jpg', 'socialthreat/S_T1.jpg', 'socialthreat/S_T2.jpg','socialthreat/S_T3_.jpg','socialthreat/S_T4_.jpg', 'socialthreat/S_T5_.jpg', 'socialthreat/S_T6_.jpg', 'socialthreat/S_T7_.jpg']
-    };
-    timeline.push(preload);
 
     /* define welcome message trial */
     var welcome = {
