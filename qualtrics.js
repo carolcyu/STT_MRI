@@ -90,19 +90,39 @@ function initExp(){
         if (displayStage) {
             displayStage.focus();
             displayStage.setAttribute('tabindex', '0');
+            displayStage.style.outline = 'none';
+            
+            // Add click handler to refocus when clicked
+            displayStage.addEventListener('click', function() {
+                this.focus();
+            });
+            
+            // Force focus after a short delay
+            setTimeout(function() {
+                displayStage.focus();
+                // Also try focusing the document body
+                document.body.focus();
+            }, 100);
         }
         
         jQuery('#display_stage').html('<h3>Experiment Starting...</h3><p>Focusing display for keyboard input...</p>');
+        
+        // Add global keyboard listener as backup
+        document.addEventListener('keydown', function(event) {
+            // Forward key events to the display stage if it's focused
+            var displayStage = document.getElementById('display_stage');
+            if (displayStage && document.activeElement !== displayStage) {
+                displayStage.focus();
+            }
+        });
         
         /* start the experiment*/
         var jsPsych = initJsPsych({
 		/* Use the Qualtrics-mounted stage as the display element */
 	    display_element: 'display_stage',
         on_finish: function() {
-            console.log("Experiment finished");
             /* Saving task data to qualtrics */
 			var STT = jsPsych.data.get().json();
-			console.log("Task data:", STT);
 			// save to qualtrics embedded data
 			Qualtrics.SurveyEngine.setEmbeddedData("STT", STT);
 			
@@ -312,6 +332,14 @@ var debrief_block = {
 timeline.push(debrief_block);
     /* start the experiment */
     jsPsych.run(timeline);
+    
+    // Ensure focus after experiment starts
+    setTimeout(function() {
+        var displayStage = document.getElementById('display_stage');
+        if (displayStage) {
+            displayStage.focus();
+        }
+    }, 1000);
     
     } catch (error) {
         console.error("Error in initExp:", error);
