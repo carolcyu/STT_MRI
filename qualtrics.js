@@ -172,7 +172,9 @@ function initExp(){
     /* define welcome message trial */
     var welcome = {
       type: jsPsychHtmlKeyboardResponse,
-      stimulus: " <p>Welcome to the Image Rating Task! </p> <p>Press any button for instructions. </p>"
+      stimulus: " <p>Welcome to the Image Rating Task! </p> <p>Press any button for instructions. </p>",
+      choices: "ALL_KEYS",
+      response_ends_trial: true
     };
     timeline.push(welcome);
 
@@ -180,6 +182,8 @@ function initExp(){
     var instructions = {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: "<p>In this task, an image will appear on the screen.</p><p>Using the response pad, please rate <strong>HOW PLEASANT an image is</strong>, as quickly as you can. If the image is...</p> <p><strong>Very unpleasant</strong>, press the button 1</p><p><strong>Unpleasant</strong>, press the button 2</p><p><strong>Pleasant</strong>, press the button 3</p> <p><strong>Very pleasant</strong>, press the button 4.</p> <p> <img src='img/response_key.png'alt='Key'></div></p><p>Press any button to continue.</p>",
+      choices: "ALL_KEYS",
+      response_ends_trial: true,
       post_trial_gap: 1000
     };
     timeline.push(instructions);
@@ -388,25 +392,35 @@ timeline.push(debrief_block);
             document.body.appendChild(keyInfo);
             setTimeout(function() { keyInfo.remove(); }, 1000);
             
-            // Try to advance trial
-            if (window.currentJsPsych && window.currentJsPsych.getCurrentTrial) {
-                var currentTrial = window.currentJsPsych.getCurrentTrial();
-                if (currentTrial) {
-                    var keyPressed = event.key;
-                    
-                    // For trials with choices, check if key is valid
-                    if (currentTrial.choices && currentTrial.choices.includes(keyPressed)) {
-                        window.currentJsPsych.finishTrial({
-                            response: keyPressed,
-                            rt: Date.now() - currentTrial.start_time
+            // Try different methods to advance trial
+            if (window.currentJsPsych) {
+                var keyPressed = event.key;
+                
+                // Method 1: Try finishTrial with minimal data
+                try {
+                    window.currentJsPsych.finishTrial({
+                        response: keyPressed
+                    });
+                } catch (e) {
+                    // Method 2: Try to trigger a click on the display stage
+                    var displayStage = document.getElementById('display_stage');
+                    if (displayStage) {
+                        var clickEvent = new MouseEvent('click', {
+                            bubbles: true,
+                            cancelable: true
                         });
+                        displayStage.dispatchEvent(clickEvent);
                     }
-                    // For trials without specific choices, advance with any key
-                    else if (!currentTrial.choices || currentTrial.choices.length === 0) {
-                        window.currentJsPsych.finishTrial({
-                            response: keyPressed,
-                            rt: Date.now() - currentTrial.start_time
+                    
+                    // Method 3: Try to simulate a keydown event on the display stage
+                    if (displayStage) {
+                        var keyEvent = new KeyboardEvent('keydown', {
+                            key: keyPressed,
+                            code: event.code,
+                            bubbles: true,
+                            cancelable: true
                         });
+                        displayStage.dispatchEvent(keyEvent);
                     }
                 }
             }
