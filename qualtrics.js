@@ -91,10 +91,18 @@ function initExp(){
             displayStage.focus();
             displayStage.setAttribute('tabindex', '0');
             displayStage.style.outline = 'none';
+            displayStage.style.position = 'relative';
+            displayStage.style.zIndex = '1000';
             
-            // Add click handler to refocus when clicked
+            // Make it capture all events
             displayStage.addEventListener('click', function() {
                 this.focus();
+            });
+            
+            // Add keyboard event capture
+            displayStage.addEventListener('keydown', function(event) {
+                console.log('Display stage keydown:', event.key);
+                // Don't prevent default - let jsPsych handle it
             });
             
             // Force focus after a short delay
@@ -107,11 +115,38 @@ function initExp(){
         
         jQuery('#display_stage').html('<h3>Experiment Starting...</h3><p>Focusing display for keyboard input...</p>');
         
-        // Add global keyboard listener as backup
-        document.addEventListener('keydown', function(event) {
-            // Forward key events to the display stage if it's focused
+        // Add aggressive focus management and keyboard debugging
+        var focusInterval = setInterval(function() {
             var displayStage = document.getElementById('display_stage');
-            if (displayStage && document.activeElement !== displayStage) {
+            if (displayStage) {
+                displayStage.focus();
+            }
+        }, 1000);
+        
+        // Add global keyboard listener with debugging
+        document.addEventListener('keydown', function(event) {
+            console.log('Key pressed:', event.key, 'Code:', event.code);
+            
+            // Show key press in display
+            var displayStage = document.getElementById('display_stage');
+            if (displayStage) {
+                var keyInfo = document.createElement('div');
+                keyInfo.style.cssText = 'position: fixed; top: 10px; right: 10px; background: yellow; padding: 5px; z-index: 9999;';
+                keyInfo.textContent = 'Key: ' + event.key + ' (' + event.code + ')';
+                document.body.appendChild(keyInfo);
+                setTimeout(function() { keyInfo.remove(); }, 2000);
+            }
+            
+            // Force focus to display stage
+            if (displayStage) {
+                displayStage.focus();
+            }
+        });
+        
+        // Also try window focus
+        window.addEventListener('keydown', function(event) {
+            var displayStage = document.getElementById('display_stage');
+            if (displayStage) {
                 displayStage.focus();
             }
         });
@@ -121,6 +156,11 @@ function initExp(){
 		/* Use the Qualtrics-mounted stage as the display element */
 	    display_element: 'display_stage',
         on_finish: function() {
+            // Clear the focus interval
+            if (typeof focusInterval !== 'undefined') {
+                clearInterval(focusInterval);
+            }
+            
             /* Saving task data to qualtrics */
 			var STT = jsPsych.data.get().json();
 			// save to qualtrics embedded data
