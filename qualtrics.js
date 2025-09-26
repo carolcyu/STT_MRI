@@ -1,8 +1,9 @@
 Qualtrics.SurveyEngine.addOnload(function()
 {
 	   setTimeout(function() {
-            document.getElementById('jspsych-container').focus();
-        }, 500);
+	            var stage = document.getElementById('display_stage');
+	            if (stage) { stage.focus(); }
+	        }, 500);
 /*Place your JavaScript here to run when the page loads*/
 // Retrieve Qualtrics object and save in qthis
 var qthis = this;
@@ -14,13 +15,12 @@ var task_github = "https://carolcyu.github.io/STT_MRI/"; // https://<your-github
 
 // requiredResources must include all the JS files that .html uses.
 var requiredResources = [
-	task_github + "jspsych/jspsych.js",
-	task_github + "jspsych/plugin-image-keyboard-response.js",
+    task_github + "jspsych/jspsych.js",
+    task_github + "jspsych/plugin-image-keyboard-response.js",
 		task_github + "jspsych/plugin-html-button-response.js", 
-	task_github + "jspsych/plugin-html-keyboard-response.js", 
-	task_github + "jspsych/plugin-categorize-html.js",
-	task_github + "jspsych/my_experiment_style_MRI.css",
-	//task_github + "main.js",
+    task_github + "jspsych/plugin-html-keyboard-response.js", 
+    task_github + "jspsych/plugin-categorize-html.js",
+    //task_github + "main.js",
 		"https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js",
     "https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js",
 ];
@@ -43,16 +43,21 @@ if (window.Qualtrics && (!window.frameElement || window.frameElement.id !== "mob
 }
 
 // jQuery is loaded in Qualtrics by default
+// Inject CSS properly (cannot be loaded with getScript)
+jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/jspsych.css'>").appendTo('head');
+jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/my_experiment_style_MRI.css'>").appendTo('head');
+
 jQuery("<div id = 'display_stage_background'></div>").appendTo('body');
-jQuery("<div id = 'display_stage'></div>").appendTo('body');
+jQuery("<div id = 'display_stage' tabindex='0' style='outline:none;'></div>").appendTo('body');
+// Ensure the stage is focusable and focused so key events register inside the Qualtrics iframe
+var displayStageEl = document.getElementById('display_stage');
+if (displayStageEl) { displayStageEl.focus(); }
 
 
 function initExp(){
     /* start the experiment*/
     var jsPsych = initJsPsych({
-		  display_element: 'jspsych-container',
-		
-        /* Change 1: Using `display_element` */
+		/* Use the Qualtrics-mounted stage as the display element */
 	    display_element: 'display_stage',
         on_finish: function() {
             //jsPsych.data.displayData(); // comment out if you do not want to display results at the end of task
@@ -262,7 +267,10 @@ var debrief_block = {
     var trials = jsPsych.data.get().filter({task: 'response'});
     var rt = Math.round(trials.select('rt').mean());
 
-    return '<p>Your average response time was ${rt}ms.</p><p>Press any key to complete the task. We appreciate your time!</p>';
+    return `
+      <p>Your average response time was ${rt}ms.</p>
+      <p>Press any key to complete the task. We appreciate your time!</p>
+    `;
 
   }
 };
