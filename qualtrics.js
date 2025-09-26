@@ -1,42 +1,24 @@
-// Simple test - just show a message
-console.log("=== QUALTRICS SCRIPT LOADED ===");
-alert("Qualtrics script is running!");
-
 Qualtrics.SurveyEngine.addOnload(function()
 {
-    console.log("=== QUALTRICS ONLOAD STARTED ===");
-    
-    // Simple test message
-    document.body.innerHTML += '<div id="test-message" style="background: yellow; padding: 20px; margin: 20px; border: 2px solid red;"><h2>SCRIPT IS WORKING!</h2><p>If you see this, the script loaded successfully.</p></div>';
-    
     // Retrieve Qualtrics object and save in qthis
     var qthis = this;
-    console.log("Qualtrics object retrieved");
 
     // Hide buttons
     qthis.hideNextButton();
-    console.log("Next button hidden");
 
     // Create display elements
     var displayDiv = document.createElement('div');
     displayDiv.id = 'display_stage';
-    displayDiv.style.cssText = 'width: 100%; height: 400px; border: 2px solid blue; padding: 20px; margin: 20px;';
-    displayDiv.innerHTML = '<h3>Display Stage Created</h3><p>Ready to load experiment...</p>';
+    displayDiv.style.cssText = 'width: 100%; height: 600px; padding: 20px;';
+    displayDiv.innerHTML = '<h3>Loading Experiment...</h3><p>Please wait while we load the task.</p>';
     document.body.appendChild(displayDiv);
-    
-    console.log("Display stage created");
     
     // Define task_github globally
     window.task_github = "https://carolcyu.github.io/STT_MRI/";
     
-    // Test jQuery
+    // Load the experiment
     if (typeof jQuery !== 'undefined') {
-        jQuery('#display_stage').append('<p style="color: green;">jQuery is working!</p>');
-        
-        // Now load the experiment
         loadExperiment();
-    } else {
-        document.getElementById('display_stage').innerHTML += '<p style="color: red;">jQuery is NOT available</p>';
     }
     
     function loadExperiment() {
@@ -85,18 +67,16 @@ Qualtrics.SurveyEngine.addOnload(function()
         function loadScripts(index) {
             if (index >= scripts.length) {
                 // All scripts loaded, start experiment
-                jQuery('#display_stage').html('<h3>Starting Experiment...</h3>');
                 setTimeout(initExp, 500);
                 return;
             }
             
             jQuery.getScript(scripts[index])
                 .done(function() {
-                    jQuery('#display_stage').append('<p>✓ Loaded: ' + scripts[index].split('/').pop() + '</p>');
                     loadScripts(index + 1);
                 })
                 .fail(function() {
-                    jQuery('#display_stage').html('<p style="color: red;">Failed to load: ' + scripts[index] + '</p>');
+                    jQuery('#display_stage').html('<p style="color: red;">Failed to load experiment scripts. Please refresh the page.</p>');
                 });
         }
     }
@@ -140,7 +120,7 @@ function initExp(){
         
         jQuery('#display_stage').html('<h3>Experiment Starting...</h3><p>Focusing display for keyboard input...</p>');
         
-        // Add aggressive focus management and keyboard debugging
+        // Add focus management
         var focusInterval = setInterval(function() {
             var displayStage = document.getElementById('display_stage');
             if (displayStage) {
@@ -364,11 +344,12 @@ var response = {
   choices: ['1', '2', '3', '4'],
   trial_duration: 3000,
   response_ends_trial: false,
- data: {
-    task: 'response'},
-    on_finish: function(data){
+  data: {
+    task: 'response'
+  },
+  on_finish: function(data){
     data.response;
- }
+  }
 };
     var test_procedure = {
       timeline: [fixation,test,response],
@@ -408,49 +389,40 @@ timeline.push(debrief_block);
         // Remove any existing keyboard listeners
         document.removeEventListener('keydown', arguments.callee);
         
-        // Add single keyboard handler
+        // Add keyboard handler
         document.addEventListener('keydown', function(event) {
-            // Show key press indicator
-            var keyInfo = document.createElement('div');
-            keyInfo.style.cssText = 'position: fixed; top: 10px; right: 10px; background: yellow; padding: 5px; z-index: 9999;';
-            keyInfo.textContent = 'Key: ' + event.key;
-            document.body.appendChild(keyInfo);
-            setTimeout(function() { keyInfo.remove(); }, 1000);
-            
-            // Try different methods to advance trial
             if (window.currentJsPsych) {
                 var keyPressed = event.key;
                 var currentTrial = window.currentJsPsych.getCurrentTrial();
                 
                 // Check if this is the MRI start trial that should only accept "5"
                 if (currentTrial && currentTrial.data && currentTrial.data.task === 'mri_start') {
-                    // Only accept "5" for MRI start trial
                     if (keyPressed !== '5') {
                         return; // Ignore other keys
                     }
                 }
                 // Check if this is a practice trial that requires specific correct answers
                 else if (currentTrial && currentTrial.key_answer) {
-                    // This is a practice trial - only accept the correct answer
                     if (keyPressed !== currentTrial.key_answer) {
                         return; // Ignore incorrect keys
                     }
                 }
                 // Check if this is a response trial that should only accept 1-4
                 else if (currentTrial && currentTrial.data && currentTrial.data.task === 'response') {
-                    // Only accept numbers 1-4 for response trials
                     if (!['1', '2', '3', '4'].includes(keyPressed)) {
                         return; // Ignore other keys
                     }
+                    // For response trials, just record the response but don't advance
+                    return;
                 }
                 
-                // Method 1: Try finishTrial with minimal data
+                // Try to advance trial
                 try {
                     window.currentJsPsych.finishTrial({
                         response: keyPressed
                     });
                 } catch (e) {
-                    // Method 2: Try to trigger a click on the display stage
+                    // Fallback: trigger events on display stage
                     var displayStage = document.getElementById('display_stage');
                     if (displayStage) {
                         var clickEvent = new MouseEvent('click', {
@@ -458,10 +430,7 @@ timeline.push(debrief_block);
                             cancelable: true
                         });
                         displayStage.dispatchEvent(clickEvent);
-                    }
-                    
-                    // Method 3: Try to simulate a keydown event on the display stage
-                    if (displayStage) {
+                        
                         var keyEvent = new KeyboardEvent('keydown', {
                             key: keyPressed,
                             code: event.code,
@@ -476,9 +445,8 @@ timeline.push(debrief_block);
     }, 2000);
     
     } catch (error) {
-        console.error("Error in initExp:", error);
         if (document.getElementById('display_stage')) {
-            document.getElementById('display_stage').innerHTML += '<p style="color: red;">Error: ' + error.message + '</p>';
+            document.getElementById('display_stage').innerHTML = '<p style="color: red;">Error initializing experiment. Please refresh the page.</p>';
         }
     }
 }
