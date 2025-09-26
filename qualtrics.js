@@ -1,75 +1,73 @@
 Qualtrics.SurveyEngine.addOnload(function()
 {
-	   setTimeout(function() {
-	            var stage = document.getElementById('display_stage');
-	            if (stage) { stage.focus(); }
-	        }, 500);
-/*Place your JavaScript here to run when the page loads*/
 // Retrieve Qualtrics object and save in qthis
 var qthis = this;
 
 // Hide buttons
 qthis.hideNextButton();
 
-var task_github = "https://carolcyu.github.io/STT_MRI/"; // https://<your-github-username>.github.io/<your-experiment-name>
+var task_github = "https://carolcyu.github.io/STT_MRI/";
+
+// Create display elements first
+jQuery("<div id='display_stage_background'></div>").appendTo('body');
+jQuery("<div id='display_stage' tabindex='0' style='outline:none;'></div>").appendTo('body');
+
+// Inject CSS
+jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/jspsych.css'>").appendTo('head');
+jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/my_experiment_style_MRI.css'>").appendTo('head');
 
 // requiredResources must include all the JS files that .html uses.
 var requiredResources = [
     task_github + "jspsych/jspsych.js",
     task_github + "jspsych/plugin-image-keyboard-response.js",
-		task_github + "jspsych/plugin-html-button-response.js", 
+    task_github + "jspsych/plugin-html-button-response.js", 
     task_github + "jspsych/plugin-html-keyboard-response.js", 
-    task_github + "jspsych/plugin-categorize-html.js",
-    //task_github + "main.js",
-		"https://cdn.jsdelivr.net/npm/jstat@latest/dist/jstat.min.js",
-    "https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js",
+    task_github + "jspsych/plugin-categorize-html.js"
 ];
 
 function loadScript(idx) {
     console.log("Loading ", requiredResources[idx]);
-    jQuery.getScript(requiredResources[idx], function () {
-        if ((idx + 1) < requiredResources.length) {
-            loadScript(idx + 1);
-        } else {
-            initExp();
-        }
-    });
+    jQuery.getScript(requiredResources[idx])
+        .done(function() {
+            console.log("Successfully loaded:", requiredResources[idx]);
+            if ((idx + 1) < requiredResources.length) {
+                loadScript(idx + 1);
+            } else {
+                console.log("All scripts loaded, initializing experiment");
+                initExp();
+            }
+        })
+        .fail(function() {
+            console.error("Failed to load:", requiredResources[idx]);
+        });
 }
 
-
-
-// Always load when running inside Qualtrics (including preview frames)
-if (window.Qualtrics) {
-    loadScript(0);
-}
-
-// jQuery is loaded in Qualtrics by default
-// Inject CSS properly (cannot be loaded with getScript)
-jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/jspsych.css'>").appendTo('head');
-jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/my_experiment_style_MRI.css'>").appendTo('head');
-
-jQuery("<div id = 'display_stage_background'></div>").appendTo('body');
-jQuery("<div id = 'display_stage' tabindex='0' style='outline:none;'></div>").appendTo('body');
-// Ensure the stage is focusable and focused so key events register inside the Qualtrics iframe
-var displayStageEl = document.getElementById('display_stage');
-if (displayStageEl) { displayStageEl.focus(); }
+// Start loading scripts
+loadScript(0);
 
 
 function initExp(){
+    console.log("Initializing experiment...");
+    
+    // Ensure display stage is focused for keyboard input
+    var displayStage = document.getElementById('display_stage');
+    if (displayStage) {
+        displayStage.focus();
+        console.log("Display stage focused");
+    }
+    
     /* start the experiment*/
     var jsPsych = initJsPsych({
 		/* Use the Qualtrics-mounted stage as the display element */
 	    display_element: 'display_stage',
         on_finish: function() {
-            //jsPsych.data.displayData(); // comment out if you do not want to display results at the end of task
+            console.log("Experiment finished");
             /* Saving task data to qualtrics */
 			var STT = jsPsych.data.get().json();
-			console.log(STT)
-			STT.toString()
+			console.log("Task data:", STT);
 			// save to qualtrics embedded data
 			Qualtrics.SurveyEngine.setEmbeddedData("STT", STT);
 			
-           
             // clear the stage
             jQuery('#display_stage').remove();
             jQuery('#display_stage_background').remove();
