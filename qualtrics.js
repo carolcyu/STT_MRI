@@ -123,33 +123,8 @@ function initExp(){
             }
         }, 1000);
         
-        // Add global keyboard listener with debugging
-        document.addEventListener('keydown', function(event) {
-            console.log('Key pressed:', event.key, 'Code:', event.code);
-            
-            // Show key press in display
-            var displayStage = document.getElementById('display_stage');
-            if (displayStage) {
-                var keyInfo = document.createElement('div');
-                keyInfo.style.cssText = 'position: fixed; top: 10px; right: 10px; background: yellow; padding: 5px; z-index: 9999;';
-                keyInfo.textContent = 'Key: ' + event.key + ' (' + event.code + ')';
-                document.body.appendChild(keyInfo);
-                setTimeout(function() { keyInfo.remove(); }, 2000);
-            }
-            
-            // Force focus to display stage
-            if (displayStage) {
-                displayStage.focus();
-            }
-        });
-        
-        // Also try window focus
-        window.addEventListener('keydown', function(event) {
-            var displayStage = document.getElementById('display_stage');
-            if (displayStage) {
-                displayStage.focus();
-            }
-        });
+        // Store reference to jsPsych for later use
+        window.currentJsPsych = null;
         
         /* start the experiment*/
         var jsPsych = initJsPsych({
@@ -188,6 +163,10 @@ function initExp(){
             qthis.clickNextButton();
         }
       }); 
+      
+      // Store jsPsych reference globally
+      window.currentJsPsych = jsPsych;
+      
 	      var timeline = [];
 
     /* define welcome message trial */
@@ -395,27 +374,36 @@ timeline.push(debrief_block);
         }
     }, 1000);
     
-    // Add manual trial advancement after jsPsych is initialized
+    // Add single, clean keyboard handler
     setTimeout(function() {
+        // Remove any existing keyboard listeners
+        document.removeEventListener('keydown', arguments.callee);
+        
+        // Add single keyboard handler
         document.addEventListener('keydown', function(event) {
-            // Try to manually advance jsPsych trials
-            if (typeof jsPsych !== 'undefined' && jsPsych.getCurrentTrial) {
-                var currentTrial = jsPsych.getCurrentTrial();
+            // Show key press indicator
+            var keyInfo = document.createElement('div');
+            keyInfo.style.cssText = 'position: fixed; top: 10px; right: 10px; background: yellow; padding: 5px; z-index: 9999;';
+            keyInfo.textContent = 'Key: ' + event.key;
+            document.body.appendChild(keyInfo);
+            setTimeout(function() { keyInfo.remove(); }, 1000);
+            
+            // Try to advance trial
+            if (window.currentJsPsych && window.currentJsPsych.getCurrentTrial) {
+                var currentTrial = window.currentJsPsych.getCurrentTrial();
                 if (currentTrial) {
                     var keyPressed = event.key;
                     
                     // For trials with choices, check if key is valid
                     if (currentTrial.choices && currentTrial.choices.includes(keyPressed)) {
-                        console.log('Manually advancing trial with key:', keyPressed);
-                        jsPsych.finishTrial({
+                        window.currentJsPsych.finishTrial({
                             response: keyPressed,
                             rt: Date.now() - currentTrial.start_time
                         });
                     }
-                    // For trials without specific choices (like welcome screen), advance with any key
+                    // For trials without specific choices, advance with any key
                     else if (!currentTrial.choices || currentTrial.choices.length === 0) {
-                        console.log('Manually advancing trial (no choices) with key:', keyPressed);
-                        jsPsych.finishTrial({
+                        window.currentJsPsych.finishTrial({
                             response: keyPressed,
                             rt: Date.now() - currentTrial.start_time
                         });
