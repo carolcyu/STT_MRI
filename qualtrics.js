@@ -6,13 +6,24 @@ Qualtrics.SurveyEngine.addOnload(function()
     // Hide buttons and question content
     qthis.hideNextButton();
     
-    // Hide only the question text, not the container
+    // Hide the question text and make the container full screen
     jQuery('.QuestionText, .QuestionBody').hide();
+    jQuery('.QuestionOuter').css({
+        'position': 'fixed',
+        'top': '0',
+        'left': '0',
+        'width': '100%',
+        'height': '100vh',
+        'z-index': '9999',
+        'background': 'black',
+        'margin': '0',
+        'padding': '0'
+    });
     
     // Create display elements
     var displayDiv = document.createElement('div');
     displayDiv.id = 'display_stage';
-    displayDiv.style.cssText = 'width: 100%; height: 600px; padding: 20px; position: relative; z-index: 1000;';
+    displayDiv.style.cssText = 'width: 100%; height: 100vh; padding: 20px; position: relative; z-index: 1000;';
     displayDiv.innerHTML = '<h3>Loading Experiment...</h3><p>Please wait while we load the task.</p>';
     
     // Insert at the top of the question area
@@ -38,11 +49,12 @@ Qualtrics.SurveyEngine.addOnload(function()
         jQuery("<style>").text(`
             #display_stage {
                 background-color: black !important;
-                min-height: 600px;
+                height: 100vh !important;
                 padding: 20px;
                 width: 100% !important;
                 position: relative !important;
                 z-index: 1000 !important;
+                overflow: hidden;
             }
             #display_stage img {
                 max-width: 100%;
@@ -56,13 +68,27 @@ Qualtrics.SurveyEngine.addOnload(function()
                 border-radius: 5px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
                 width: 100% !important;
+                height: 100vh !important;
+                overflow: hidden;
             }
             .jspsych-display-element {
                 background-color: black !important;
                 width: 100% !important;
+                height: 100vh !important;
             }
             .QuestionOuter {
-                position: relative !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                height: 100vh !important;
+                z-index: 9999 !important;
+                background: black !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            body {
+                overflow: hidden !important;
             }
         `).appendTo('head');
         
