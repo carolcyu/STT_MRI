@@ -123,7 +123,7 @@ function initExp(){
             }
         }, 1000);
         
-        // Add global keyboard listener with debugging and manual trial advancement
+        // Add global keyboard listener with debugging
         document.addEventListener('keydown', function(event) {
             console.log('Key pressed:', event.key, 'Code:', event.code);
             
@@ -140,23 +140,6 @@ function initExp(){
             // Force focus to display stage
             if (displayStage) {
                 displayStage.focus();
-            }
-            
-            // Try to manually advance jsPsych trials
-            if (typeof jsPsych !== 'undefined' && jsPsych.getCurrentTrial) {
-                var currentTrial = jsPsych.getCurrentTrial();
-                if (currentTrial && currentTrial.choices) {
-                    // Check if the pressed key is in the allowed choices
-                    var keyPressed = event.key;
-                    if (currentTrial.choices.includes(keyPressed)) {
-                        console.log('Manually advancing trial with key:', keyPressed);
-                        // Try to end the current trial
-                        jsPsych.finishTrial({
-                            response: keyPressed,
-                            rt: Date.now() - currentTrial.start_time
-                        });
-                    }
-                }
             }
         });
         
@@ -411,6 +394,36 @@ timeline.push(debrief_block);
             displayStage.focus();
         }
     }, 1000);
+    
+    // Add manual trial advancement after jsPsych is initialized
+    setTimeout(function() {
+        document.addEventListener('keydown', function(event) {
+            // Try to manually advance jsPsych trials
+            if (typeof jsPsych !== 'undefined' && jsPsych.getCurrentTrial) {
+                var currentTrial = jsPsych.getCurrentTrial();
+                if (currentTrial) {
+                    var keyPressed = event.key;
+                    
+                    // For trials with choices, check if key is valid
+                    if (currentTrial.choices && currentTrial.choices.includes(keyPressed)) {
+                        console.log('Manually advancing trial with key:', keyPressed);
+                        jsPsych.finishTrial({
+                            response: keyPressed,
+                            rt: Date.now() - currentTrial.start_time
+                        });
+                    }
+                    // For trials without specific choices (like welcome screen), advance with any key
+                    else if (!currentTrial.choices || currentTrial.choices.length === 0) {
+                        console.log('Manually advancing trial (no choices) with key:', keyPressed);
+                        jsPsych.finishTrial({
+                            response: keyPressed,
+                            rt: Date.now() - currentTrial.start_time
+                        });
+                    }
+                }
+            }
+        });
+    }, 2000);
     
     } catch (error) {
         console.error("Error in initExp:", error);
