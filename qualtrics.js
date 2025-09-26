@@ -123,7 +123,7 @@ function initExp(){
             }
         }, 1000);
         
-        // Add global keyboard listener with debugging
+        // Add global keyboard listener with debugging and manual trial advancement
         document.addEventListener('keydown', function(event) {
             console.log('Key pressed:', event.key, 'Code:', event.code);
             
@@ -141,6 +141,23 @@ function initExp(){
             if (displayStage) {
                 displayStage.focus();
             }
+            
+            // Try to manually advance jsPsych trials
+            if (typeof jsPsych !== 'undefined' && jsPsych.getCurrentTrial) {
+                var currentTrial = jsPsych.getCurrentTrial();
+                if (currentTrial && currentTrial.choices) {
+                    // Check if the pressed key is in the allowed choices
+                    var keyPressed = event.key;
+                    if (currentTrial.choices.includes(keyPressed)) {
+                        console.log('Manually advancing trial with key:', keyPressed);
+                        // Try to end the current trial
+                        jsPsych.finishTrial({
+                            response: keyPressed,
+                            rt: Date.now() - currentTrial.start_time
+                        });
+                    }
+                }
+            }
         });
         
         // Also try window focus
@@ -155,6 +172,20 @@ function initExp(){
         var jsPsych = initJsPsych({
 		/* Use the Qualtrics-mounted stage as the display element */
 	    display_element: 'display_stage',
+        on_trial_start: function() {
+            // Ensure focus on each trial
+            var displayStage = document.getElementById('display_stage');
+            if (displayStage) {
+                displayStage.focus();
+            }
+        },
+        on_trial_finish: function() {
+            // Ensure focus after each trial
+            var displayStage = document.getElementById('display_stage');
+            if (displayStage) {
+                displayStage.focus();
+            }
+        },
         on_finish: function() {
             // Clear the focus interval
             if (typeof focusInterval !== 'undefined') {
