@@ -1,63 +1,61 @@
+// Simple test - just show a message
+console.log("=== QUALTRICS SCRIPT LOADED ===");
+alert("Qualtrics script is running!");
+
 Qualtrics.SurveyEngine.addOnload(function()
 {
-// Retrieve Qualtrics object and save in qthis
-var qthis = this;
+    console.log("=== QUALTRICS ONLOAD STARTED ===");
+    
+    // Simple test message
+    document.body.innerHTML += '<div id="test-message" style="background: yellow; padding: 20px; margin: 20px; border: 2px solid red;"><h2>SCRIPT IS WORKING!</h2><p>If you see this, the script loaded successfully.</p></div>';
+    
+    // Retrieve Qualtrics object and save in qthis
+    var qthis = this;
+    console.log("Qualtrics object retrieved");
 
-// Hide buttons
-qthis.hideNextButton();
+    // Hide buttons
+    qthis.hideNextButton();
+    console.log("Next button hidden");
 
-var task_github = "https://carolcyu.github.io/STT_MRI/";
-
-// Create display elements first
-jQuery("<div id='display_stage_background'></div>").appendTo('body');
-jQuery("<div id='display_stage' tabindex='0' style='outline:none;'></div>").appendTo('body');
-
-// Inject CSS
-jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/jspsych.css'>").appendTo('head');
-jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/my_experiment_style_MRI.css'>").appendTo('head');
-
-// requiredResources must include all the JS files that .html uses.
-var requiredResources = [
-    task_github + "jspsych/jspsych.js",
-    task_github + "jspsych/plugin-image-keyboard-response.js",
-    task_github + "jspsych/plugin-html-button-response.js", 
-    task_github + "jspsych/plugin-html-keyboard-response.js", 
-    task_github + "jspsych/plugin-categorize-html.js"
-];
-
-function loadScript(idx) {
-    console.log("Loading ", requiredResources[idx]);
-    jQuery.getScript(requiredResources[idx])
-        .done(function() {
-            console.log("Successfully loaded:", requiredResources[idx]);
-            if ((idx + 1) < requiredResources.length) {
-                loadScript(idx + 1);
-            } else {
-                console.log("All scripts loaded, initializing experiment");
-                initExp();
-            }
-        })
-        .fail(function() {
-            console.error("Failed to load:", requiredResources[idx]);
-        });
-}
-
-// Start loading scripts
-loadScript(0);
+    // Create display elements
+    var displayDiv = document.createElement('div');
+    displayDiv.id = 'display_stage';
+    displayDiv.style.cssText = 'width: 100%; height: 400px; border: 2px solid blue; padding: 20px; margin: 20px;';
+    displayDiv.innerHTML = '<h3>Display Stage Created</h3><p>Ready to load experiment...</p>';
+    document.body.appendChild(displayDiv);
+    
+    console.log("Display stage created");
+    
+    // Test jQuery
+    if (typeof jQuery !== 'undefined') {
+        console.log("jQuery is available");
+        jQuery('#display_stage').append('<p style="color: green;">jQuery is working!</p>');
+    } else {
+        console.log("jQuery is NOT available");
+        document.getElementById('display_stage').innerHTML += '<p style="color: red;">jQuery is NOT available</p>';
+    }
 
 
 function initExp(){
-    console.log("Initializing experiment...");
-    
-    // Ensure display stage is focused for keyboard input
-    var displayStage = document.getElementById('display_stage');
-    if (displayStage) {
-        displayStage.focus();
-        console.log("Display stage focused");
-    }
-    
-    /* start the experiment*/
-    var jsPsych = initJsPsych({
+    try {
+        console.log("Initializing experiment...");
+        
+        // Check if jsPsych is available
+        if (typeof initJsPsych === 'undefined') {
+            console.error("jsPsych not loaded");
+            jQuery('#display_stage').html('<p>Error: jsPsych library not loaded</p>');
+            return;
+        }
+        
+        // Ensure display stage is focused for keyboard input
+        var displayStage = document.getElementById('display_stage');
+        if (displayStage) {
+            displayStage.focus();
+            console.log("Display stage focused");
+        }
+        
+        /* start the experiment*/
+        var jsPsych = initJsPsych({
 		/* Use the Qualtrics-mounted stage as the display element */
 	    display_element: 'display_stage',
         on_finish: function() {
@@ -274,8 +272,16 @@ var debrief_block = {
 timeline.push(debrief_block);
     /* start the experiment */
     jsPsych.run(timeline);
+    
+    } catch (error) {
+        console.error("Error in initExp:", error);
+        if (document.getElementById('display_stage')) {
+            document.getElementById('display_stage').innerHTML += '<p style="color: red;">Error: ' + error.message + '</p>';
+        }
     }
-//end
+}
+
+// Close the addOnload function
 });
 
 Qualtrics.SurveyEngine.addOnReady(function()
