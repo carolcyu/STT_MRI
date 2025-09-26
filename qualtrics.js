@@ -26,6 +26,9 @@ Qualtrics.SurveyEngine.addOnload(function()
     
     console.log("Display stage created");
     
+    // Define task_github globally
+    window.task_github = "https://carolcyu.github.io/STT_MRI/";
+    
     // Test jQuery
     if (typeof jQuery !== 'undefined') {
         jQuery('#display_stage').append('<p style="color: green;">jQuery is working!</p>');
@@ -37,14 +40,12 @@ Qualtrics.SurveyEngine.addOnload(function()
     }
     
     function loadExperiment() {
-        var task_github = "https://carolcyu.github.io/STT_MRI/";
-        
         // Update display
         jQuery('#display_stage').html('<h3>Loading Experiment...</h3><p>Please wait while we load the task.</p>');
         
         // Load CSS first with error handling
-        jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/jspsych.css'>").appendTo('head');
-        jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/my_experiment_style_MRI.css'>").appendTo('head');
+        jQuery("<link rel='stylesheet' href='" + window.task_github + "jspsych/jspsych.css'>").appendTo('head');
+        jQuery("<link rel='stylesheet' href='" + window.task_github + "jspsych/my_experiment_style_MRI.css'>").appendTo('head');
         
         // Add inline CSS as backup
         jQuery("<style>").text(`
@@ -69,11 +70,11 @@ Qualtrics.SurveyEngine.addOnload(function()
         
         // Scripts to load
         var scripts = [
-            task_github + "jspsych/jspsych.js",
-            task_github + "jspsych/plugin-image-keyboard-response.js",
-            task_github + "jspsych/plugin-html-button-response.js", 
-            task_github + "jspsych/plugin-html-keyboard-response.js", 
-            task_github + "jspsych/plugin-categorize-html.js"
+            window.task_github + "jspsych/jspsych.js",
+            window.task_github + "jspsych/plugin-image-keyboard-response.js",
+            window.task_github + "jspsych/plugin-html-button-response.js", 
+            window.task_github + "jspsych/plugin-html-keyboard-response.js", 
+            window.task_github + "jspsych/plugin-categorize-html.js"
         ];
         
         loadScripts(0);
@@ -202,7 +203,7 @@ function initExp(){
     /* define instructions trial */
     var instructions = {
       type: jsPsychHtmlKeyboardResponse,
-      stimulus: "<p>In this task, an image will appear on the screen.</p><p>Using the response pad, please rate <strong>HOW PLEASANT an image is</strong>, as quickly as you can. If the image is...</p> <p><strong>Very unpleasant</strong>, press the button 1</p><p><strong>Unpleasant</strong>, press the button 2</p><p><strong>Pleasant</strong>, press the button 3</p> <p><strong>Very pleasant</strong>, press the button 4.</p> <p> <img src='" + task_github + "img/response_key.png' alt='Key'></div></p><p>Press any button to continue.</p>",
+      stimulus: "<p>In this task, an image will appear on the screen.</p><p>Using the response pad, please rate <strong>HOW PLEASANT an image is</strong>, as quickly as you can. If the image is...</p> <p><strong>Very unpleasant</strong>, press the button 1</p><p><strong>Unpleasant</strong>, press the button 2</p><p><strong>Pleasant</strong>, press the button 3</p> <p><strong>Very pleasant</strong>, press the button 4.</p> <p> <img src='" + window.task_github + "img/response_key.png' alt='Key'></div></p><p>Press any button to continue.</p>",
       choices: "ALL_KEYS",
       response_ends_trial: true,
       post_trial_gap: 1000
@@ -211,7 +212,7 @@ function initExp(){
 /* practice trials x4*/
 var practice1 = {
   type: jsPsychCategorizeHtml,
-  stimulus: "<img src='" + task_github + "img/practice1.jpg' alt='practice1'>",
+  stimulus: "<img src='" + window.task_github + "img/practice1.jpg' alt='practice1'>",
   choices: ['1', '2', '3', '4'],
   key_answer: '1',
   text_answer: '1 button for Very Unpleasant',
@@ -230,7 +231,7 @@ timeline.push(practice1);
 
 var practice2 = {
   type: jsPsychCategorizeHtml,
-  stimulus: "<img src='" + task_github + "img/practice2.jpg' alt='practice2'>",
+  stimulus: "<img src='" + window.task_github + "img/practice2.jpg' alt='practice2'>",
   choices: ['1', '2', '3', '4'],
   key_answer: '3',
   text_answer: '3 button for Pleasant',
@@ -248,7 +249,7 @@ timeline.push(practice2);
 
 var practice3 = {
   type: jsPsychCategorizeHtml,
-  stimulus: "<img src='" + task_github + "img/practice3.jpg' alt='practice3'>",
+  stimulus: "<img src='" + window.task_github + "img/practice3.jpg' alt='practice3'>",
   choices: ['1', '2', '3', '4'],
   key_answer: '4',
   text_answer: '4 button for Very Pleasant',
@@ -266,7 +267,7 @@ timeline.push(practice3);
 
 var practice4 = {
   type: jsPsychCategorizeHtml,
-  stimulus: "<img src='" + task_github + "img/practice4.jpg' alt='practice4'>",
+  stimulus: "<img src='" + window.task_github + "img/practice4.jpg' alt='practice4'>",
   choices: ['1', '2', '3', '4'],
   key_answer: '2',
   text_answer: '2 button for unpleasant',
@@ -305,37 +306,37 @@ timeline.push(MRIstart);
 
     /* define test trial stimuli array */
     var test_stimulus = [
-        {stimulus: task_github + 'socialthreat/NS_NT1.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_NT2.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_NT3.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_NT4.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_NT5.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_NT6.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_NT7.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT1.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT2.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT3.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT4.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT5.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT6.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT7.jpg'},
 
-        {stimulus: task_github + 'socialthreat/NS_T1.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_T2.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_T3.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_T4.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_T5.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_T6.jpg'},
-        {stimulus: task_github + 'socialthreat/NS_T7.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T1.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T2.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T3.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T4.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T5.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T6.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T7.jpg'},
 
-        {stimulus: task_github + 'socialthreat/S_NT1.jpg'},
-        {stimulus: task_github + 'socialthreat/S_NT2_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_NT3_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_NT4_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_NT5_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_NT6_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_NT7_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT1.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT2_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT3_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT4_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT5_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT6_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT7_.jpg'},
         
-        {stimulus: task_github + 'socialthreat/S_T1.jpg'},
-        {stimulus: task_github + 'socialthreat/S_T2.jpg'},
-        {stimulus: task_github + 'socialthreat/S_T3_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_T4_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_T5_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_T6_.jpg'},
-        {stimulus: task_github + 'socialthreat/S_T7_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T1.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T2.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T3_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T4_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T5_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T6_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T7_.jpg'},
   ];
     var fixation = {
   type: jsPsychHtmlKeyboardResponse,
