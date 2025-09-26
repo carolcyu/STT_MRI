@@ -3,15 +3,20 @@ Qualtrics.SurveyEngine.addOnload(function()
     // Retrieve Qualtrics object and save in qthis
     var qthis = this;
 
-    // Hide buttons
+    // Hide buttons and question content
     qthis.hideNextButton();
-
+    
+    // Hide the Qualtrics question content
+    jQuery('.QuestionText, .QuestionBody, .QuestionOuter').hide();
+    
     // Create display elements
     var displayDiv = document.createElement('div');
     displayDiv.id = 'display_stage';
-    displayDiv.style.cssText = 'width: 100%; height: 600px; padding: 20px;';
+    displayDiv.style.cssText = 'width: 100%; height: 600px; padding: 20px; position: relative; z-index: 1000;';
     displayDiv.innerHTML = '<h3>Loading Experiment...</h3><p>Please wait while we load the task.</p>';
-    document.body.appendChild(displayDiv);
+    
+    // Insert at the top of the question area
+    jQuery('.QuestionOuter').prepend(displayDiv);
     
     // Define task_github globally
     window.task_github = "https://carolcyu.github.io/STT_MRI/";
@@ -35,6 +40,9 @@ Qualtrics.SurveyEngine.addOnload(function()
                 background-color: black !important;
                 min-height: 600px;
                 padding: 20px;
+                width: 100% !important;
+                position: relative !important;
+                z-index: 1000 !important;
             }
             #display_stage img {
                 max-width: 100%;
@@ -47,9 +55,14 @@ Qualtrics.SurveyEngine.addOnload(function()
                 padding: 20px;
                 border-radius: 5px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                width: 100% !important;
             }
             .jspsych-display-element {
                 background-color: black !important;
+                width: 100% !important;
+            }
+            .QuestionOuter {
+                position: relative !important;
             }
         `).appendTo('head');
         
