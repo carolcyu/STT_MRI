@@ -38,7 +38,8 @@ function loadScript(idx) {
 
 
 
-if (window.Qualtrics && (!window.frameElement || window.frameElement.id !== "mobile-preview-view")) {
+// Always load when running inside Qualtrics (including preview frames)
+if (window.Qualtrics) {
     loadScript(0);
 }
 
@@ -267,10 +268,8 @@ var debrief_block = {
     var trials = jsPsych.data.get().filter({task: 'response'});
     var rt = Math.round(trials.select('rt').mean());
 
-    return `
-      <p>Your average response time was ${rt}ms.</p>
-      <p>Press any key to complete the task. We appreciate your time!</p>
-    `;
+    return '<p>Your average response time was ' + rt + 'ms.</p>' +
+      '<p>Press any key to complete the task. We appreciate your time!</p>';
 
   }
 };
