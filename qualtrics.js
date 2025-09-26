@@ -300,7 +300,7 @@ var MRIstart ={
   choices: ['5'],
  prompt: "<p> A cross (+) will appear when the task starts. </p>",
  data: {
-    task: 'response'},
+    task: 'mri_start'},
     on_finish: function(data){
     data.response;
  }
@@ -422,8 +422,15 @@ timeline.push(debrief_block);
                 var keyPressed = event.key;
                 var currentTrial = window.currentJsPsych.getCurrentTrial();
                 
+                // Check if this is the MRI start trial that should only accept "5"
+                if (currentTrial && currentTrial.data && currentTrial.data.task === 'mri_start') {
+                    // Only accept "5" for MRI start trial
+                    if (keyPressed !== '5') {
+                        return; // Ignore other keys
+                    }
+                }
                 // Check if this is a practice trial that requires specific correct answers
-                if (currentTrial && currentTrial.key_answer) {
+                else if (currentTrial && currentTrial.key_answer) {
                     // This is a practice trial - only accept the correct answer
                     if (keyPressed !== currentTrial.key_answer) {
                         return; // Ignore incorrect keys
@@ -433,14 +440,6 @@ timeline.push(debrief_block);
                 else if (currentTrial && currentTrial.data && currentTrial.data.task === 'response') {
                     // Only accept numbers 1-4 for response trials
                     if (!['1', '2', '3', '4'].includes(keyPressed)) {
-                        return; // Ignore other keys
-                    }
-                }
-                
-                // Check if this is the MRI start trial that should only accept "5"
-                if (currentTrial && currentTrial.choices && currentTrial.choices.includes('5')) {
-                    // Only accept "5" for MRI start trial
-                    if (keyPressed !== '5') {
                         return; // Ignore other keys
                     }
                 }
