@@ -23,7 +23,7 @@ Qualtrics.SurveyEngine.addOnload(function()
     // Create display elements
     var displayDiv = document.createElement('div');
     displayDiv.id = 'display_stage';
-    displayDiv.style.cssText = 'width: 100%; height: 100vh; padding: 20px; position: relative; z-index: 1000;';
+    displayDiv.style.cssText = 'width: 100%; height: 100vh; padding: 50px 20px 20px 20px; position: relative; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;';
     displayDiv.innerHTML = '<h3>Loading Experiment...</h3><p>Please wait while we load the task.</p>';
     
     // Insert at the top of the question area
@@ -50,31 +50,55 @@ Qualtrics.SurveyEngine.addOnload(function()
             #display_stage {
                 background-color: black !important;
                 height: 100vh !important;
-                padding: 20px;
+                padding: 50px 20px 20px 20px !important;
                 width: 100% !important;
                 position: relative !important;
                 z-index: 1000 !important;
                 overflow: hidden;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                box-sizing: border-box !important;
             }
             #display_stage img {
-                max-width: 100%;
-                height: auto;
-                display: block;
-                margin: 0 auto;
+                max-width: 80% !important;
+                max-height: 60vh !important;
+                height: auto !important;
+                display: block !important;
+                margin: 10px auto !important;
+                object-fit: contain !important;
             }
             .jspsych-content {
                 background-color: black !important;
-                padding: 20px;
+                padding: 20px !important;
                 border-radius: 5px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
                 width: 100% !important;
                 height: 100vh !important;
                 overflow: hidden;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+                box-sizing: border-box !important;
             }
             .jspsych-display-element {
                 background-color: black !important;
                 width: 100% !important;
                 height: 100vh !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
+            }
+            .jspsych-stimulus {
+                max-width: 100% !important;
+                max-height: 70vh !important;
+                display: flex !important;
+                flex-direction: column !important;
+                justify-content: center !important;
+                align-items: center !important;
             }
             .QuestionOuter {
                 position: fixed !important;
