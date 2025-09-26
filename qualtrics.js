@@ -28,22 +28,60 @@ Qualtrics.SurveyEngine.addOnload(function()
     
     // Test jQuery
     if (typeof jQuery !== 'undefined') {
-        console.log("jQuery is available");
         jQuery('#display_stage').append('<p style="color: green;">jQuery is working!</p>');
+        
+        // Now load the experiment
+        loadExperiment();
     } else {
-        console.log("jQuery is NOT available");
         document.getElementById('display_stage').innerHTML += '<p style="color: red;">jQuery is NOT available</p>';
+    }
+    
+    function loadExperiment() {
+        var task_github = "https://carolcyu.github.io/STT_MRI/";
+        
+        // Update display
+        jQuery('#display_stage').html('<h3>Loading Experiment...</h3><p>Please wait while we load the task.</p>');
+        
+        // Load CSS first
+        jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/jspsych.css'>").appendTo('head');
+        jQuery("<link rel='stylesheet' href='" + task_github + "jspsych/my_experiment_style_MRI.css'>").appendTo('head');
+        
+        // Scripts to load
+        var scripts = [
+            task_github + "jspsych/jspsych.js",
+            task_github + "jspsych/plugin-image-keyboard-response.js",
+            task_github + "jspsych/plugin-html-button-response.js", 
+            task_github + "jspsych/plugin-html-keyboard-response.js", 
+            task_github + "jspsych/plugin-categorize-html.js"
+        ];
+        
+        loadScripts(0);
+        
+        function loadScripts(index) {
+            if (index >= scripts.length) {
+                // All scripts loaded, start experiment
+                jQuery('#display_stage').html('<h3>Starting Experiment...</h3>');
+                setTimeout(initExp, 500);
+                return;
+            }
+            
+            jQuery.getScript(scripts[index])
+                .done(function() {
+                    jQuery('#display_stage').append('<p>✓ Loaded: ' + scripts[index].split('/').pop() + '</p>');
+                    loadScripts(index + 1);
+                })
+                .fail(function() {
+                    jQuery('#display_stage').html('<p style="color: red;">Failed to load: ' + scripts[index] + '</p>');
+                });
+        }
     }
 
 
 function initExp(){
     try {
-        console.log("Initializing experiment...");
-        
         // Check if jsPsych is available
         if (typeof initJsPsych === 'undefined') {
-            console.error("jsPsych not loaded");
-            jQuery('#display_stage').html('<p>Error: jsPsych library not loaded</p>');
+            jQuery('#display_stage').html('<p style="color: red;">Error: jsPsych library not loaded</p>');
             return;
         }
         
@@ -51,8 +89,10 @@ function initExp(){
         var displayStage = document.getElementById('display_stage');
         if (displayStage) {
             displayStage.focus();
-            console.log("Display stage focused");
+            displayStage.setAttribute('tabindex', '0');
         }
+        
+        jQuery('#display_stage').html('<h3>Experiment Starting...</h3><p>Focusing display for keyboard input...</p>');
         
         /* start the experiment*/
         var jsPsych = initJsPsych({
