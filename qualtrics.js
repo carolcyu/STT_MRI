@@ -6,8 +6,8 @@ Qualtrics.SurveyEngine.addOnload(function()
     // Hide buttons and question content
     qthis.hideNextButton();
     
-    // Hide the Qualtrics question content
-    jQuery('.QuestionText, .QuestionBody, .QuestionOuter').hide();
+    // Hide only the question text, not the container
+    jQuery('.QuestionText, .QuestionBody').hide();
     
     // Create display elements
     var displayDiv = document.createElement('div');
