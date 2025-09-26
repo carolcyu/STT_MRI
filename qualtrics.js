@@ -50,7 +50,7 @@ Qualtrics.SurveyEngine.addOnload(function()
         // Add inline CSS as backup
         jQuery("<style>").text(`
             #display_stage {
-                background-color: #f0f0f0;
+                background-color: black !important;
                 min-height: 600px;
                 padding: 20px;
             }
@@ -61,10 +61,13 @@ Qualtrics.SurveyEngine.addOnload(function()
                 margin: 0 auto;
             }
             .jspsych-content {
-                background-color: white;
+                background-color: black !important;
                 padding: 20px;
                 border-radius: 5px;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            }
+            .jspsych-display-element {
+                background-color: black !important;
             }
         `).appendTo('head');
         
@@ -417,6 +420,15 @@ timeline.push(debrief_block);
             // Try different methods to advance trial
             if (window.currentJsPsych) {
                 var keyPressed = event.key;
+                var currentTrial = window.currentJsPsych.getCurrentTrial();
+                
+                // Check if this is a response trial that should only accept 1-4
+                if (currentTrial && currentTrial.data && currentTrial.data.task === 'response') {
+                    // Only accept numbers 1-4 for response trials
+                    if (!['1', '2', '3', '4'].includes(keyPressed)) {
+                        return; // Ignore other keys
+                    }
+                }
                 
                 // Method 1: Try finishTrial with minimal data
                 try {
