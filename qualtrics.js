@@ -23,7 +23,7 @@ Qualtrics.SurveyEngine.addOnload(function()
     // Create display elements
     var displayDiv = document.createElement('div');
     displayDiv.id = 'display_stage';
-    displayDiv.style.cssText = 'width: 100%; height: 100vh; padding: 50px 20px 20px 20px; position: relative; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;';
+    displayDiv.style.cssText = 'width: 100%; height: 100vh; padding: 80px 20px 20px 20px; position: relative; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center;';
     displayDiv.innerHTML = '<h3>Loading Experiment...</h3><p>Please wait while we load the task.</p>';
     
     // Insert at the top of the question area
@@ -62,8 +62,8 @@ Qualtrics.SurveyEngine.addOnload(function()
                 box-sizing: border-box !important;
             }
             #display_stage img {
-                max-width: 80% !important;
-                max-height: 60vh !important;
+                max-width: 65% !important;
+                max-height: 50vh !important;
                 height: auto !important;
                 display: block !important;
                 margin: 10px auto !important;
@@ -94,10 +94,10 @@ Qualtrics.SurveyEngine.addOnload(function()
             }
             .jspsych-stimulus {
                 max-width: 100% !important;
-                max-height: 70vh !important;
+                max-height: 60vh !important;
                 display: flex !important;
                 flex-direction: column !important;
-                justify-content: center !important;
+                justify-content: flex-start !important;
                 align-items: center !important;
             }
             .QuestionOuter {
