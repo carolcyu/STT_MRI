@@ -400,6 +400,7 @@ var test = {
   trial_duration: 750,
   stimulus_height: 650,
   maintain_aspect_ration: true,
+  response_ends_trial: false,
  };
 var response = {
   type: jsPsychHtmlKeyboardResponse,
