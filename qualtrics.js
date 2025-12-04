@@ -389,6 +389,7 @@ timeline.push(MRIstart);
   stimulus: '<div style="font-size:60px;">+</div>',
   choices: "NO_KEYS",
   trial_duration: 500,
+response_ends_trial: false,
   data: {
     task: 'fixation'
   }
@@ -418,7 +419,7 @@ var response = {
     var test_procedure = {
       timeline: [fixation,test,response],
       timeline_variables: test_stimulus,
-      repetitions: 1,
+      repetitions: 2,
       randomize_order: false,
       post_trial_gap: 250,
     };
