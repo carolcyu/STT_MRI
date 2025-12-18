@@ -350,6 +350,18 @@ var MRIstart ={
 };
 timeline.push(MRIstart);
 
+var fixation_start = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '<div style="font-size:60px;">+</div>',
+  choices: "NO_KEYS",
+  response_ends_trial: false,
+  trial_duration: 15000,
+  data: {
+    task: 'fixation_start'
+  }
+};	
+timeline.push(fixation_start);
+
     /* define test trial stimuli array */
     var test_stimulus = [
         {stimulus: window.task_github + 'socialthreat/NS_NT1.jpg'},
@@ -383,6 +395,38 @@ timeline.push(MRIstart);
         {stimulus: window.task_github + 'socialthreat/S_T5_.jpg'},
         {stimulus: window.task_github + 'socialthreat/S_T6_.jpg'},
         {stimulus: window.task_github + 'socialthreat/S_T7_.jpg'},
+
+        {stimulus: window.task_github + 'socialthreat/NS_T1.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T2.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T3.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T4.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T5.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T6.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_T7.jpg'},
+
+       {stimulus: window.task_github + 'socialthreat/NS_NT1.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT2.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT3.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT4.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT5.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT6.jpg'},
+        {stimulus: window.task_github + 'socialthreat/NS_NT7.jpg'},
+
+      {stimulus: window.task_github + 'socialthreat/S_T1.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T2.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T3_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T4_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T5_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T6_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_T7_.jpg'},
+
+       {stimulus: window.task_github + 'socialthreat/S_NT1.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT2_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT3_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT4_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT5_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT6_.jpg'},
+        {stimulus: window.task_github + 'socialthreat/S_NT7_.jpg'},
   ];
     var fixation = {
   type: jsPsychHtmlKeyboardResponse,
@@ -419,11 +463,23 @@ var response = {
     var test_procedure = {
       timeline: [fixation,test,response],
       timeline_variables: test_stimulus,
-      repetitions: 2,
+      repetitions: 1,
       randomize_order: false,
       post_trial_gap: 250,
     };
     timeline.push(test_procedure);
+
+var fixation_end = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: '<div style="font-size:60px;">+</div>',
+  choices: "NO_KEYS",
+  response_ends_trial: false,
+  trial_duration: 15000,
+  data: {
+    task: 'fixation_end'
+  }
+};	
+timeline.push(fixation_end);
     
 var debrief_block = {
   type: jsPsychHtmlKeyboardResponse,
