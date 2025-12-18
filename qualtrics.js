@@ -509,7 +509,7 @@ timeline.push(fixation_end);
                         return; // Ignore other keys
                     }
                 }
-                if (currentTrial && currentTrial.data && currentTrial.data.task === 'fixation') {
+                if (currentTrial && currentTrial.data && currentTrial.data.task === 'fixation','fixation_end','fixation_start') {
                 // If it is a fixation trial, IGNORE ALL key presses and DO NOT advance the trial.
                 console.log('Key ignored during fixation.');
                 return; 
