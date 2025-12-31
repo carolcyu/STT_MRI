@@ -34,16 +34,58 @@
 
     var timeline = [];
 
-    var preload = {
+ // Pre load images first, Define image sets
+// --- Non-Social, Non-Threat (NS_NT) ---
+var ns_nt_img = [
+    'socialthreat/NS_NT1.jpg', 'socialthreat/NS_NT2.jpg', 'socialthreat/NS_NT3.jpg', 
+    'socialthreat/NS_NT4.jpg', 'socialthreat/NS_NT5.jpg', 'socialthreat/NS_NT6.jpg', 
+    'socialthreat/NS_NT7.jpg'
+];
+
+// --- Non-Social, Threat (NS_T) ---
+var ns_t_img = [
+    'socialthreat/NS_T1.jpg', 'socialthreat/NS_T2.jpg', 'socialthreat/NS_T3.jpg', 
+    'socialthreat/NS_T4.jpg', 'socialthreat/NS_T5.jpg', 'socialthreat/NS_T6.jpg', 
+    'socialthreat/NS_T7.jpg'
+];
+
+// --- Social, Non-Threat (S_NT) ---
+var s_nt_img = [
+    'socialthreat/S_NT1.jpg', 'socialthreat/S_NT2_.jpg', 'socialthreat/S_NT3_.jpg', 
+    'socialthreat/S_NT4_.jpg', 'socialthreat/S_NT5_.jpg', 'socialthreat/S_NT6_.jpg', 
+    'socialthreat/S_NT7_.jpg'
+];
+
+// --- Social, Threat (S_T) ---
+var s_t_img = [
+    'socialthreat/S_T1.jpg', 'socialthreat/S_T2.jpg', 'socialthreat/S_T3_.jpg', 
+    'socialthreat/S_T4_.jpg', 'socialthreat/S_T5_.jpg', 'socialthreat/S_T6_.jpg', 
+    'socialthreat/S_T7_.jpg'
+];
+
+var intro_img = [
+    'img/response_key.png','img/practice1.jpg','img/practice2.jpg','img/practice3.jpg','img/practice4.jpg'
+];
+ var all_images = [].concat(s_t_img, s_nt_img, ns_t_img, ns_nt_img, intro_img); 
+
+var preload = {
     type: jsPsychPreload,
-    images: [
-        'img/response_key.png', 
-        'img/practice1.jpg', 'img/practice2.jpg', 'img/practice3.jpg', 'img/practice4.jpg',
-        // Instead of listing every file, you can use the test_stimulus array:
-        ...test_stimulus.map(s => s.stimulus)
-    ]
+    images: all_images,
+    message: `
+        <div style="text-align:center;">
+            <p><strong>Preparing Task...</strong></p>
+            <div style="width:300px; height: 20px; background-color: #ddd; margin: auto;">
+                <div id="jspsych-preload-progress-bar" style="background-color: #333; height: 20px; width: 0%;"></div>
+            </div>
+            <p>Please wait until all stimuli are cached.</p>
+        </div>`,
+    auto_preload: false, // We are manually providing the list for "forced" loading
+    continue_after_error: false, // CRITICAL: Stop the task if a file is missing
+    error_message: '<p>Error: One or more images failed to load. Please check your file paths and server connection.</p>',
+    on_finish: function(data) {
+        console.log("Forced Preload Complete. Status:", data.success ? "Success" : "Failed");
+    }
 };
-timeline.unshift(preload); // Put it at the very start
 
     /* Welcome & Instructions */
     var welcome = {
