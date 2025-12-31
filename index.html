@@ -26,7 +26,7 @@
                 TaskFlow.Client.Measure.end();
             } else {
                 // running local
-                console.log('STT_data_task1.json', jsPsych.data.get().json());
+               jsPsych.data.get().localSave('json', 'STT_data_task1.json');
                 jsPsych.data.displayData(); // Useful for local testing
             }
         }
