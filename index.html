@@ -1,307 +1,174 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Welcome</title>
-      <script src="./jspsych/jspsych.js"></script>
+    <script src="./jspsych/jspsych.js"></script>
     <script src="./jspsych/plugin-image-keyboard-response.js"></script>
     <script src="./jspsych/plugin-html-keyboard-response.js"></script>
-        <script src="./jspsych/plugin-html-button-response.js"></script>
+    <script src="./jspsych/plugin-html-button-response.js"></script>
     <link href="./jspsych/jspsych.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="./jspsych/my_experiment_style_MRI.css">
     <script src="./jspsych/plugin-categorize-html.js"></script>
     <script src="./lib/taskflow/client.js"></script>
-  </head>
-  <body></body>
-  <script>
-/* TASK INFO: social threat task with 4 blocks, 1 per condition, 10 images per block; and practice trials; short version of stt.html */
-
+</head>
+<body></body>
+<script>
     /* initialize jsPsych */
     var jsPsych = initJsPsych({
         on_finish: async function() {
-
-          if (window.location !== window.parent.location) {
-            // running on server so send data to the server
-            var measure = await TaskFlow.Client.Measure.get();
-            // get data out of jspsych
-            var task_data = JSON.stringify(jsPsych.data.get().values());
-            measure.complete = true;
-            measure.json = task_data;
-            // sync measure with server
-            await TaskFlow.Client.Measure.set(measure);
-            // continue on!
-            TaskFlow.Client.Measure.end();
-          } else {
-            // running local
-            // display the data
-      console.log('STT_data_task1.json', jsPsych.data.get().json());
-    }
-  });
-          }
+            if (window.location !== window.parent.location) {
+                // running on server
+                var measure = await TaskFlow.Client.Measure.get();
+                var task_data = JSON.stringify(jsPsych.data.get().values());
+                measure.complete = true;
+                measure.json = task_data;
+                await TaskFlow.Client.Measure.set(measure);
+                TaskFlow.Client.Measure.end();
+            } else {
+                // running local
+                console.log('STT_data_task1.json', jsPsych.data.get().json());
+                jsPsych.data.displayData(); // Useful for local testing
+            }
         }
     });
 
-    /* create timeline */
     var timeline = [];
 
-    /* define welcome message trial */
+    /* Welcome & Instructions */
     var welcome = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: " <p>Welcome to the Image Rating Task! </p> <p>Press any button for instructions. </p>",
-      choices: "ALL_KEYS",
-      response_ends_trial: true
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "<p>Welcome to the Image Rating Task!</p><p>Press any button for instructions.</p>",
+        choices: "ALL_KEYS"
     };
     timeline.push(welcome);
 
-    /* define instructions trial */
     var instructions = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: "<p>In this task, an image will appear on the screen.</p><p>Using the response pad, please rate <strong>HOW PLEASANT an image is</strong>, as quickly as you can. If the image is...</p> <p><strong>Very unpleasant</strong>, press the button 1</p><p><strong>Unpleasant</strong>, press the button 2</p><p><strong>Pleasant</strong>, press the button 3</p> <p><strong>Very pleasant</strong>, press the button 4.</p> <p> <img src='" + "img/response_key.png' alt='Key'></div></p><p>Press any button to continue.</p>",
-      choices: "ALL_KEYS",
-      response_ends_trial: true,
-      post_trial_gap: 1000
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: `<p>In this task, an image will appear on the screen.</p>
+                   <p>Using the response pad, please rate <strong>HOW PLEASANT</strong> an image is.</p>
+                   <p><strong>1</strong>: Very unpleasant | <strong>2</strong>: Unpleasant</p>
+                   <p><strong>3</strong>: Pleasant | <strong>4</strong>: Very pleasant</p>
+                   <p><img src="img/response_key.png" alt="Key" style="width:200px;"></p>
+                   <p>Press any button to continue.</p>`,
+        choices: "ALL_KEYS",
+        post_trial_gap: 1000
     };
     timeline.push(instructions);
-/* practice trials x4*/
-var practice1 = {
-  type: jsPsychCategorizeHtml,
-  stimulus: "<img src='img/practice1.jpg' alt='practice1'>",
-  choices: ['1', '2', '3', '4'],
-  key_answer: '1',
-  text_answer: '1 button for Very Unpleasant',
-  correct_text: "<p class='prompt'>Correct, this is the %ANS%.</p>",
-  incorrect_text: "<p class='prompt'>Please try again, select the 1 button for Very Unpleasant. </p>",
- prompt: "<p>Press '-2' for very unpleasant, '-1' for unpleasant, '+1' for pleasant, or '+2' for very pleasant. </p>",
-force_correct_button_press: true, 
-prompt: "<p>Let's practice! </p> <p><strong>Please rate this image as Very Unpleasant.</strong></p>",
-data: {
-    task: 'response'},
-    on_finish: function(data){
-    data.response;
- }
-};
-timeline.push(practice1);
 
-var practice2 = {
-  type: jsPsychCategorizeHtml,
-  stimulus: "<img src='img/practice2.jpg' alt='practice2'>",
-  choices: ['1', '2', '3', '4'],
-  key_answer: '3',
-  text_answer: '3 button for Pleasant',
-  correct_text: "<p class='prompt'>Correct, this is the %ANS%.</p>",
-  incorrect_text: "<p class='prompt'>Please try again, select the 3 button for Pleasant. </p>",
-  prompt: "<p><strong>Please rate this image as Pleasant.</strong></p>",
-force_correct_button_press: true, 
-data: {
-    task: 'response'},
-    on_finish: function(data){
-    data.response;
- }
-};
-timeline.push(practice2);
+    /* Practice Trials */
+    var practice_stimuli = [
+        { stim: 'img/practice1.jpg', ans: '1', text: 'Very Unpleasant' },
+        { stim: 'img/practice2.jpg', ans: '3', text: 'Pleasant' },
+        { stim: 'img/practice3.jpg', ans: '4', text: 'Very Pleasant' },
+        { stim: 'img/practice4.jpg', ans: '2', text: 'Unpleasant' }
+    ];
 
-var practice3 = {
-  type: jsPsychCategorizeHtml,
-  stimulus: "<img src='img/practice3.jpg' alt='practice3'>",
-  choices: ['1', '2', '3', '4'],
-  key_answer: '4',
-  text_answer: '4 button for Very Pleasant',
-  correct_text: "<p class='prompt'>Correct, this is the %ANS%.</p>",
-  incorrect_text: "<p class='prompt'>Please try again, select the 4 button for Very Pleasant. </p>",
-  prompt: "<p>Let's practice again! </p> <p><strong>Please rate this image as Very Pleasant.</strong></p>",
-force_correct_button_press: true, 
-data: {
-    task: 'response'},
-    on_finish: function(data){
-    data.response;
- }
-};
-timeline.push(practice3);
+    practice_stimuli.forEach((item, index) => {
+        var p = {
+            type: jsPsychCategorizeHtml,
+            stimulus: `<img src="${item.stim}" style="height:400px;">`,
+            choices: ['1', '2', '3', '4'],
+            key_answer: item.ans,
+            text_answer: item.text,
+            correct_text: `<p class='prompt'>Correct!</p>`,
+            incorrect_text: `<p class='prompt'>Incorrect. Please press ${item.ans} for ${item.text}.</p>`,
+            prompt: `<p>Practice ${index + 1}: Rate this as <strong>${item.text}</strong>.</p>`,
+            force_correct_button_press: true,
+            data: { task: 'practice' }
+        };
+        timeline.push(p);
+    });
 
-var practice4 = {
-  type: jsPsychCategorizeHtml,
-  stimulus: "<img src= 'img/practice4.jpg' alt='practice4'>",
-  choices: ['1', '2', '3', '4'],
-  key_answer: '2',
-  text_answer: '2 button for unpleasant',
-  correct_text: "<p class='prompt'>Correct, this is the %ANS%.</p>",
-  incorrect_text: "<p class='prompt'>Please try again, select the 2 button for Unpleasant. </p>",
-  prompt: "<p><strong>Please rate this image as Unpleasant.</strong></p>",
-force_correct_button_press: true, 
-data: {
-    task: 'response'},
-    on_finish: function(data){
-    data.response;
- }
-};
-timeline.push(practice4);
-
-/*questions for the examiner*/
-var questions = {
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: "<p>If you have questions or concerns, please signal to the examiner. </p> <p>If not, press any button to continue. </p>"
+    var questions = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "<p>Questions? Signal the examiner. If ready, press any button to begin.</p>"
     };
     timeline.push(questions);
 
-/*define trial awaiting for the scanner keyboard button #5 */
-var MRIstart ={
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: "<p> Please wait while the scanner starts up. This will take 10 seconds. </strong></p>",
-  choices: ['5'],
- prompt: "<p> A cross (+) will appear when the task starts. </p>",
- data: {
-    task: 'mri_start'},
-    on_finish: function(data){
-    data.response;
- }
-};
-timeline.push(MRIstart);
+    /* MRI Sync */
+    var MRIstart = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "<p>Please wait while the scanner starts up...</p>",
+        choices: ['5'],
+        prompt: "<p>Waiting for '5' pulse from scanner.</p>",
+        data: { task: 'mri_trigger' }
+    };
+    timeline.push(MRIstart);
 
-var fixation_start = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: '<div style="font-size:60px;">+</div>',
-  choices: "NO_KEYS",
-  response_ends_trial: false,
-  trial_duration: 15000,
-  data: {
-    task: 'fixation_start'
-  }
-};	
-timeline.push(fixation_start);
+    var fixation_start = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<div style="font-size:60px;">+</div>',
+        choices: "NO_KEYS",
+        trial_duration: 15000,
+        data: { task: 'fixation_start' }
+    };
+    timeline.push(fixation_start);
 
-    /* define test trial stimuli array */
+    /* Main Task */
     var test_stimulus = [
-        {stimulus: 'socialthreat/NS_NT1.jpg'},
-        {stimulus: 'socialthreat/NS_NT2.jpg'},
-        {stimulus: 'socialthreat/NS_NT3.jpg'},
-        {stimulus: 'socialthreat/NS_NT4.jpg'},
-        {stimulus: 'socialthreat/NS_NT5.jpg'},
-        {stimulus: 'socialthreat/NS_NT6.jpg'},
-        {stimulus: 'socialthreat/NS_NT7.jpg'},
+        { stimulus: 'socialthreat/NS_NT1.jpg' }, { stimulus: 'socialthreat/NS_NT2.jpg' },
+        { stimulus: 'socialthreat/NS_T1.jpg' }, { stimulus: 'socialthreat/NS_T2.jpg' },
+        { stimulus: 'socialthreat/S_NT1.jpg' }, { stimulus: 'socialthreat/S_NT2_.jpg' },
+        { stimulus: 'socialthreat/S_T1.jpg' }, { stimulus: 'socialthreat/S_T2.jpg' }
+        // ... Add remaining images here
+    ];
 
-        {stimulus: 'socialthreat/NS_T1.jpg'},
-        {stimulus: 'socialthreat/NS_T2.jpg'},
-        {stimulus: 'socialthreat/NS_T3.jpg'},
-        {stimulus: 'socialthreat/NS_T4.jpg'},
-        {stimulus: 'socialthreat/NS_T5.jpg'},
-        {stimulus: 'socialthreat/NS_T6.jpg'},
-        {stimulus: 'socialthreat/NS_T7.jpg'},
-
-        {stimulus: 'socialthreat/S_NT1.jpg'},
-        {stimulus: 'socialthreat/S_NT2_.jpg'},
-        {stimulus: 'socialthreat/S_NT3_.jpg'},
-        {stimulus: 'socialthreat/S_NT4_.jpg'},
-        {stimulus: 'socialthreat/S_NT5_.jpg'},
-        {stimulus: 'socialthreat/S_NT6_.jpg'},
-        {stimulus: 'socialthreat/S_NT7_.jpg'},
-        
-        {stimulus: 'socialthreat/S_T1.jpg'},
-        {stimulus: 'socialthreat/S_T2.jpg'},
-        {stimulus: 'socialthreat/S_T3_.jpg'},
-        {stimulus: 'socialthreat/S_T4_.jpg'},
-        {stimulus: 'socialthreat/S_T5_.jpg'},
-        {stimulus: 'socialthreat/S_T6_.jpg'},
-        {stimulus: 'socialthreat/S_T7_.jpg'},
-
-        {stimulus: 'socialthreat/NS_T1.jpg'},
-        {stimulus: 'socialthreat/NS_T2.jpg'},
-        {stimulus: 'socialthreat/NS_T3.jpg'},
-        {stimulus: 'socialthreat/NS_T4.jpg'},
-        {stimulus: 'socialthreat/NS_T5.jpg'},
-        {stimulus: 'socialthreat/NS_T6.jpg'},
-        {stimulus: 'socialthreat/NS_T7.jpg'},
-
-       {stimulus: 'socialthreat/NS_NT1.jpg'},
-        {stimulus: 'socialthreat/NS_NT2.jpg'},
-        {stimulus: 'socialthreat/NS_NT3.jpg'},
-        {stimulus: 'socialthreat/NS_NT4.jpg'},
-        {stimulus: 'socialthreat/NS_NT5.jpg'},
-        {stimulus: 'socialthreat/NS_NT6.jpg'},
-        {stimulus: 'socialthreat/NS_NT7.jpg'},
-
-      {stimulus: 'socialthreat/S_T1.jpg'},
-        {stimulus: 'socialthreat/S_T2.jpg'},
-        {stimulus: 'socialthreat/S_T3_.jpg'},
-        {stimulus: 'socialthreat/S_T4_.jpg'},
-        {stimulus: 'socialthreat/S_T5_.jpg'},
-        {stimulus: 'socialthreat/S_T6_.jpg'},
-        {stimulus: 'socialthreat/S_T7_.jpg'},
-
-       {stimulus: 'socialthreat/S_NT1.jpg'},
-        {stimulus: 'socialthreat/S_NT2_.jpg'},
-        {stimulus: 'socialthreat/S_NT3_.jpg'},
-        {stimulus: 'socialthreat/S_NT4_.jpg'},
-        {stimulus: 'socialthreat/S_NT5_.jpg'},
-        {stimulus: 'socialthreat/S_NT6_.jpg'},
-        {stimulus: 'socialthreat/S_NT7_.jpg'},
-  ];
     var fixation = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: '<div style="font-size:60px;">+</div>',
-  choices: "NO_KEYS",
-  trial_duration: 600,
-response_ends_trial: false,
-  data: {
-    task: 'fixation'
-  }
-};
-var test = {
-  type: jsPsychImageKeyboardResponse,
-  stimulus: jsPsych.timelineVariable('stimulus'),
-  choices: "NO_KEYS",
-  trial_duration: 750,
-  stimulus_height: 650,
-  maintain_aspect_ratio: true,
-  response_ends_trial: false,
- };
-var response = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: "<p>How pleasant or unpleasant is this image? </p>",
-  choices: ['1', '2', '3', '4'],
-  trial_duration: 1500,
-  response_ends_trial: false,
-  data: {
-    task: 'response'
-  },
-  on_finish: function(data){
-    data.response;
-  }
-};
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<div style="font-size:60px;">+</div>',
+        choices: "NO_KEYS",
+        trial_duration: 600,
+        data: { task: 'fixation' }
+    };
+
+    var test = {
+        type: jsPsychImageKeyboardResponse,
+        stimulus: jsPsych.timelineVariable('stimulus'),
+        choices: "NO_KEYS",
+        trial_duration: 750,
+        stimulus_height: 650,
+        maintain_aspect_ratio: true,
+        data: { task: 'image_display' }
+    };
+
+    var response = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: "<p>How pleasant or unpleasant is this image?</p>",
+        choices: ['1', '2', '3', '4'],
+        trial_duration: 1500,
+        data: { 
+            task: 'response',
+            image: jsPsych.timelineVariable('stimulus') // Attach image info to response data
+        }
+    };
+
     var test_procedure = {
-      timeline: [fixation,test,response],
-      timeline_variables: test_stimulus,
-      repetitions: 1,
-      randomize_order: false,
-      post_trial_gap: 250,
+        timeline: [fixation, test, response],
+        timeline_variables: test_stimulus,
+        randomize_order: false,
+        post_trial_gap: 250
     };
     timeline.push(test_procedure);
 
-var fixation_end = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: '<div style="font-size:60px;">+</div>',
-  choices: "NO_KEYS",
-  response_ends_trial: false,
-  trial_duration: 15000,
-  data: {
-    task: 'fixation_end'
-  }
-};	
-timeline.push(fixation_end);
-    
-var debrief_block = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: function() {
+    var fixation_end = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: '<div style="font-size:60px;">+</div>',
+        choices: "NO_KEYS",
+        trial_duration: 15000,
+        data: { task: 'fixation_end' }
+    };
+    timeline.push(fixation_end);
 
-    var trials = jsPsych.data.get().filter({task: 'response'});
-    var rt = Math.round(trials.select('rt').mean());
+    var debrief_block = {
+        type: jsPsychHtmlKeyboardResponse,
+        stimulus: function() {
+            var trials = jsPsych.data.get().filter({task: 'response'});
+            var rt = Math.round(trials.select('rt').mean());
+            return `<p>Your average response time was ${rt}ms.</p><p>Press any key to finish.</p>`;
+        }
+    };
+    timeline.push(debrief_block);
 
-    return `<p>Your average response time was ${rt}ms.</p>
-      <p>Press any key to complete the task. We appreciate your time!</p>`;
-
-  }
-};
-timeline.push(debrief_block);
-    /* start the experiment */
     jsPsych.run(timeline);
-
-  </script>
+</script>
 </html>
