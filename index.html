@@ -27,7 +27,6 @@
             } else {
                 // running local
                jsPsych.data.get().localSave('json', 'STT_data_task1.json');
-                jsPsych.data.displayData(); // Useful for local testing
             }
         }
     });
@@ -88,9 +87,9 @@
     /* MRI Sync */
     var MRIstart = {
         type: jsPsychHtmlKeyboardResponse,
-        stimulus: "<p>Please wait while the scanner starts up...</p>",
+        stimulus: "<p>Please wait while the scanner starts up. This will take 10 seconds.</p>",
         choices: ['5'],
-        prompt: "<p>Waiting for '5' pulse from scanner.</p>",
+        prompt: "<p>A cross (+) will appear when the task starts.</p>",
         data: { task: 'mri_trigger' }
     };
     timeline.push(MRIstart);
