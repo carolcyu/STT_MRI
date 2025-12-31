@@ -32,7 +32,9 @@
           } else {
             // running local
             // display the data
-            jsPsych.data.displayData();
+      saveDataAsJSON('STT_data_task1.json', jsPsych.data.get().json());
+    }
+  });
           }
         }
     });
