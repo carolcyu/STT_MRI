@@ -144,9 +144,21 @@ timeline.push(preload);
         stimulus: "<p>Please wait while the scanner starts up. This will take 10 seconds.</p>",
         choices: ['5'],
         prompt: "<p>A cross (+) will appear when the task starts.</p>",
-        data: { task: 'mri_trigger' }
-    };
-    timeline.push(MRIstart);
+     data: {
+        task: 'mri_start'
+    },
+    on_start: function() {
+        console.log('[GNG] Waiting for MRI scanner trigger (key 5)...');
+    },
+    on_finish: function(data) {
+        console.log('[GNG] MRI trigger received:', {
+            key: data.response,
+            rt: data.rt,
+            timestamp: new Date().toISOString()
+        });
+    }
+};
+timeline.push(MRIstart);
 
     var fixation_start = {
         type: jsPsychHtmlKeyboardResponse,
