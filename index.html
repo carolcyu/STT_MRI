@@ -79,7 +79,7 @@ var preload = {
             </div>
             <p>Please wait until all stimuli are cached.</p>
         </div>`,
-    auto_preload: false, // We are manually providing the list for "forced" loading
+    auto_preload: true, // We are manually providing the list for "forced" loading
     continue_after_error: false, // CRITICAL: Stop the task if a file is missing
     error_message: '<p>Error: One or more images failed to load. Please check your file paths and server connection.</p>',
     on_finish: function(data) {
@@ -201,39 +201,39 @@ timeline.push(MRIstart);
         {stimulus: 'socialthreat/S_T4_.jpg', data: {social: 1, threat: 1}},
         {stimulus: 'socialthreat/S_T5_.jpg', data: {social: 1, threat: 1}},
         {stimulus: 'socialthreat/S_T6_.jpg', data: {social: 1, threat: 1}},
-        {stimulus: 'socialthreat/S_T7_.jpg', data: {social: 1, threat: 1}},
-
-        {stimulus: 'socialthreat/NS_T1.jpg', data: {social: 0, threat: 1}},
-        {stimulus: 'socialthreat/NS_T2.jpg', data: {social: 0, threat: 1}},
-        {stimulus: 'socialthreat/NS_T3.jpg', data: {social: 0, threat: 1}},
-        {stimulus: 'socialthreat/NS_T4.jpg', data: {social: 0, threat: 1}},
+        {stimulus: 'socialthreat/S_T7_.jpg', data: {social: 1, threat: 1}},  
+    /*blocks 5-8*/
         {stimulus: 'socialthreat/NS_T5.jpg', data: {social: 0, threat: 1}},
-        {stimulus: 'socialthreat/NS_T6.jpg', data: {social: 0, threat: 1}},
+        {stimulus: 'socialthreat/NS_T2.jpg', data: {social: 0, threat: 1}},
         {stimulus: 'socialthreat/NS_T7.jpg', data: {social: 0, threat: 1}},
+        {stimulus: 'socialthreat/NS_T1.jpg', data: {social: 0, threat: 1}},
+        {stimulus: 'socialthreat/NS_T4.jpg', data: {social: 0, threat: 1}},
+        {stimulus: 'socialthreat/NS_T6.jpg', data: {social: 0, threat: 1}},
+        {stimulus: 'socialthreat/NS_T3.jpg', data: {social: 0, threat: 1}},
 
-       {stimulus: 'socialthreat/NS_NT1.jpg', data: {social: 0, threat: 0}},
-        {stimulus: 'socialthreat/NS_NT2.jpg', data: {social: 0, threat: 0}},
-        {stimulus: 'socialthreat/NS_NT3.jpg', data: {social: 0, threat: 0}},
-        {stimulus: 'socialthreat/NS_NT4.jpg', data: {social: 0, threat: 0}},
-        {stimulus: 'socialthreat/NS_NT5.jpg', data: {social: 0, threat: 0}},
+       {stimulus: 'socialthreat/NS_NT3.jpg', data: {social: 0, threat: 0}},
         {stimulus: 'socialthreat/NS_NT6.jpg', data: {social: 0, threat: 0}},
+        {stimulus: 'socialthreat/NS_NT1.jpg', data: {social: 0, threat: 0}},
         {stimulus: 'socialthreat/NS_NT7.jpg', data: {social: 0, threat: 0}},
+        {stimulus: 'socialthreat/NS_NT5.jpg', data: {social: 0, threat: 0}},
+        {stimulus: 'socialthreat/NS_NT2.jpg', data: {social: 0, threat: 0}},
+        {stimulus: 'socialthreat/NS_NT4.jpg', data: {social: 0, threat: 0}},
 
-      {stimulus: 'socialthreat/S_T1.jpg', data: {social: 1, threat: 1}},
-        {stimulus: 'socialthreat/S_T2.jpg', data: {social: 1, threat: 1}},
-        {stimulus: 'socialthreat/S_T3_.jpg', data: {social: 1, threat: 1}},
+        {stimulus: 'socialthreat/S_T1.jpg', data: {social: 1, threat: 1}},
         {stimulus: 'socialthreat/S_T4_.jpg', data: {social: 1, threat: 1}},
         {stimulus: 'socialthreat/S_T5_.jpg', data: {social: 1, threat: 1}},
-        {stimulus: 'socialthreat/S_T6_.jpg', data: {social: 1, threat: 1}},
+        {stimulus: 'socialthreat/S_T3_.jpg', data: {social: 1, threat: 1}},
         {stimulus: 'socialthreat/S_T7_.jpg', data: {social: 1, threat: 1}},
+        {stimulus: 'socialthreat/S_T2.jpg', data: {social: 1, threat: 1}},
+        {stimulus: 'socialthreat/S_T6_.jpg', data: {social: 1, threat: 1}},
 
-       {stimulus: 'socialthreat/S_NT1.jpg', data: {social: 1, threat: 0}},
-        {stimulus: 'socialthreat/S_NT2_.jpg', data: {social: 1, threat: 0}},
-        {stimulus: 'socialthreat/S_NT3_.jpg', data: {social: 1, threat: 0}},
-        {stimulus: 'socialthreat/S_NT4_.jpg', data: {social: 1, threat: 0}},
-        {stimulus: 'socialthreat/S_NT5_.jpg', data: {social: 1, threat: 0}},
         {stimulus: 'socialthreat/S_NT6_.jpg', data: {social: 1, threat: 0}},
         {stimulus: 'socialthreat/S_NT7_.jpg', data: {social: 1, threat: 0}},
+        {stimulus: 'socialthreat/S_NT2_.jpg', data: {social: 1, threat: 0}},
+        {stimulus: 'socialthreat/S_NT4_.jpg', data: {social: 1, threat: 0}},
+        {stimulus: 'socialthreat/S_NT3_.jpg', data: {social: 1, threat: 0}},
+        {stimulus: 'socialthreat/S_NT1.jpg', data: {social: 1, threat: 0}},
+        {stimulus: 'socialthreat/S_NT5_.jpg', data: {social: 1, threat: 0}},
     ];
 
     var fixation = {
